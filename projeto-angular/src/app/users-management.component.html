@@ -1,0 +1,365 @@
+<div class="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+  <!-- Header -->
+  <header class="bg-white/10 backdrop-blur-sm border-b border-white/20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-4">
+        <div class="flex items-center space-x-4">
+          <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-600 rounded-lg flex items-center justify-center">
+            <span class="text-white font-bold text-lg">👥</span>
+          </div>
+          <div>
+            <h1 class="text-xl font-bold text-white">Gerenciamento de Usuários</h1>
+            <p class="text-gray-300 text-sm">Administração de contas e permissões</p>
+          </div>
+        </div>
+        
+        <div class="flex items-center space-x-4">
+          <div class="text-right">
+            <p class="text-white font-medium">{{ currentUser?.fullName || 'Administrador' }}</p>
+            <p class="text-gray-300 text-sm">{{ currentUser?.email || 'admin@sistema.com' }}</p>
+          </div>
+          <button (click)="logout()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center space-x-2">
+            <span>🚪</span>
+            <span>Sair</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-300 text-sm font-medium">Total de Usuários</p>
+            <p class="text-2xl font-bold text-white">{{ users.length }}</p>
+          </div>
+          <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-300 text-sm font-medium">Usuários Ativos</p>
+            <p class="text-2xl font-bold text-white">{{ getActiveUsersCount() }}</p>
+          </div>
+          <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-300 text-sm font-medium">Administradores</p>
+            <p class="text-2xl font-bold text-white">{{ getAdminUsersCount() }}</p>
+          </div>
+          <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 mb-8">
+      <div class="flex flex-col md:flex-row gap-4">
+        <div class="flex-1">
+          <label class="block text-gray-300 text-sm font-medium mb-2">Buscar usuários</label>
+          <div class="relative">
+            <input 
+              type="text" 
+              [(ngModel)]="searchTerm"
+              (input)="filterUsers()"
+              class="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Buscar por nome ou email..."
+            >
+            <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </div>
+        </div>
+        
+        <div class="md:w-48">
+          <label class="block text-gray-300 text-sm font-medium mb-2">Filtrar por tipo</label>
+          <select 
+            [(ngModel)]="filterType"
+            (change)="filterUsers()"
+            class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="all">Todos</option>
+            <option value="admin">Administradores</option>
+            <option value="user">Usuários</option>
+          </select>
+        </div>
+        
+        <div class="md:w-48">
+          <label class="block text-gray-300 text-sm font-medium mb-2">Filtrar por status</label>
+          <select 
+            [(ngModel)]="filterStatus"
+            (change)="filterUsers()"
+            class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="all">Todos</option>
+            <option value="active">Ativos</option>
+            <option value="inactive">Inativos</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 overflow-hidden">
+      <div class="px-6 py-4 border-b border-white/20">
+        <h2 class="text-xl font-semibold text-white flex items-center">
+          <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+          </svg>
+          Lista de Usuários ({{ filteredUsers.length }})
+        </h2>
+      </div>
+      
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+            <tr class="border-b border-white/20 bg-white/5">
+              <th class="text-left text-gray-300 font-medium py-4 px-6">Usuário</th>
+              <th class="text-left text-gray-300 font-medium py-4 px-6">Email</th>
+              <th class="text-left text-gray-300 font-medium py-4 px-6">Tipo</th>
+              <th class="text-left text-gray-300 font-medium py-4 px-6">Status</th>
+              <th class="text-left text-gray-300 font-medium py-4 px-6">Último Acesso</th>
+              <th class="text-left text-gray-300 font-medium py-4 px-6">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of filteredUsers; trackBy: trackByUserId" class="border-b border-white/10 hover:bg-white/5 transition-colors">
+              <td class="py-4 px-6">
+                <div class="flex items-center space-x-3">
+                  <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                    <span class="text-white font-medium text-sm">{{ getUserInitials(user) }}</span>
+                  </div>
+                  <div>
+                    <p class="text-white font-medium">{{ user.fullName || user.username }}</p>
+                    <p class="text-gray-400 text-sm">ID: {{ user.id }}</p>
+                  </div>
+                </div>
+              </td>
+              <td class="py-4 px-6 text-gray-300">{{ user.email }}</td>
+              <td class="py-4 px-6">
+                <span [class]="user.role === 'admin' ? 'bg-purple-500/20 text-purple-300 border-purple-500/30' : 'bg-blue-500/20 text-blue-300 border-blue-500/30'" 
+                      class="inline-flex items-center px-3 py-1 text-xs rounded-full border">
+                  <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="user.role === 'admin' ? 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z' : 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'"></path>
+                  </svg>
+                  {{ user.role === 'admin' ? 'Administrador' : 'Usuário' }}
+                </span>
+              </td>
+              <td class="py-4 px-6">
+                <span [class]="user.active ? 'bg-green-500/20 text-green-300 border-green-500/30' : 'bg-red-500/20 text-red-300 border-red-500/30'" 
+                      class="inline-flex items-center px-3 py-1 text-xs rounded-full border">
+                  <div [class]="user.active ? 'bg-green-400' : 'bg-red-400'" class="w-2 h-2 rounded-full mr-2"></div>
+                  {{ user.active ? 'Ativo' : 'Inativo' }}
+                </span>
+              </td>
+              <td class="py-4 px-6 text-gray-300 text-sm">
+                {{ user.lastLogin ? (user.lastLogin | date:'dd/MM/yyyy HH:mm') : 'Nunca' }}
+              </td>
+              <td class="py-4 px-6">
+                <div class="flex space-x-2">
+                  <button 
+                    (click)="viewUserDetails(user)"
+                    class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs transition-colors flex items-center space-x-1"
+                    title="Ver detalhes"
+                  >
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                    <span>Ver</span>
+                  </button>
+                  
+                  <button 
+                    (click)="editUser(user)"
+                    class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs transition-colors flex items-center space-x-1"
+                    title="Editar usuário"
+                  >
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                    <span>Editar</span>
+                  </button>
+                  
+                  <button 
+                    (click)="toggleUserStatus(user)"
+                    [class]="user.active ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'" 
+                    class="text-white px-3 py-1 rounded text-xs transition-colors flex items-center space-x-1"
+                    [title]="user.active ? 'Desativar usuário' : 'Ativar usuário'"
+                  >
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="user.active ? 'M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728' : 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'"></path>
+                    </svg>
+                    <span>{{ user.active ? 'Desativar' : 'Ativar' }}</span>
+                  </button>
+                  
+                  <button 
+                    (click)="promoteToAdmin(user)"
+                    *ngIf="user.role !== 'admin'"
+                    class="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded text-xs transition-colors flex items-center space-x-1"
+                    title="Promover a administrador"
+                  >
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                    <span>Promover</span>
+                  </button>
+                  
+                  <button 
+                    (click)="demoteFromAdmin(user)"
+                    *ngIf="user.role === 'admin' && user.id !== currentUser?.id"
+                    class="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded text-xs transition-colors flex items-center space-x-1"
+                    title="Remover privilégios de administrador"
+                  >
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path>
+                    </svg>
+                    <span>Rebaixar</span>
+                  </button>
+                  
+                  <button 
+                    (click)="deleteUser(user)"
+                    *ngIf="user.id !== currentUser?.id"
+                    class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs transition-colors flex items-center space-x-1"
+                    title="Excluir usuário"
+                  >
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                    <span>Excluir</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Empty State -->
+      <div *ngIf="filteredUsers.length === 0" class="text-center py-12">
+        <svg class="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+        </svg>
+        <h3 class="text-xl font-semibold text-white mb-2">Nenhum usuário encontrado</h3>
+        <p class="text-gray-400">{{ searchTerm ? 'Tente ajustar os filtros de busca.' : 'Os usuários registrados aparecerão aqui.' }}</p>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div *ngIf="filteredUsers.length > 0" class="mt-6 flex justify-between items-center">
+      <div class="text-gray-300 text-sm">
+        Mostrando {{ filteredUsers.length }} de {{ users.length }} usuários
+      </div>
+      
+      <div class="flex space-x-2">
+        <button 
+          class="bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded text-sm transition-colors flex items-center space-x-1"
+          disabled
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+          <span>Anterior</span>
+        </button>
+        
+        <span class="bg-blue-500 text-white px-3 py-1 rounded text-sm">1</span>
+        
+        <button 
+          class="bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded text-sm transition-colors flex items-center space-x-1"
+          disabled
+        >
+          <span>Próximo</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- User Details Modal -->
+<div *ngIf="showUserModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+  <div class="bg-gray-800 rounded-xl p-6 max-w-md w-full mx-4 border border-gray-600">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-semibold text-white">Detalhes do Usuário</h3>
+      <button (click)="closeUserModal()" class="text-gray-400 hover:text-white">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+    
+    <div *ngIf="selectedUser" class="space-y-4">
+      <div class="text-center">
+        <div class="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
+          <span class="text-white font-bold text-2xl">{{ getUserInitials(selectedUser) }}</span>
+        </div>
+        <h4 class="text-white font-semibold text-lg">{{ selectedUser.fullName || selectedUser.username }}</h4>
+        <p class="text-gray-400">{{ selectedUser.email }}</p>
+      </div>
+      
+      <div class="space-y-3">
+        <div class="flex justify-between">
+          <span class="text-gray-400">ID:</span>
+          <span class="text-white">{{ selectedUser.id }}</span>
+        </div>
+        
+        <div class="flex justify-between">
+          <span class="text-gray-400">Tipo:</span>
+          <span [class]="selectedUser.role === 'admin' ? 'text-purple-300' : 'text-blue-300'">{{ selectedUser.role === 'admin' ? 'Administrador' : 'Usuário' }}</span>
+        </div>
+        
+        <div class="flex justify-between">
+          <span class="text-gray-400">Status:</span>
+          <span [class]="selectedUser.active ? 'text-green-300' : 'text-red-300'">{{ selectedUser.active ? 'Ativo' : 'Inativo' }}</span>
+        </div>
+        
+        <div class="flex justify-between">
+          <span class="text-gray-400">Último Acesso:</span>
+          <span class="text-white">{{ selectedUser.lastLogin ? (selectedUser.lastLogin | date:'dd/MM/yyyy HH:mm') : 'Nunca' }}</span>
+        </div>
+        
+        <div class="flex justify-between">
+          <span class="text-gray-400">Data de Registro:</span>
+          <span class="text-white">{{ selectedUser.createdAt ? (selectedUser.createdAt | date:'dd/MM/yyyy') : 'N/A' }}</span>
+        </div>
+      </div>
+      
+      <div class="flex space-x-2 pt-4">
+        <button 
+          (click)="editUser(selectedUser)"
+          class="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors"
+        >
+          Editar
+        </button>
+        <button 
+          (click)="closeUserModal()"
+          class="flex-1 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded transition-colors"
+        >
+          Fechar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

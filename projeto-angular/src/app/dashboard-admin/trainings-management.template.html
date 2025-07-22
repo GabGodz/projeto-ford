@@ -1,0 +1,283 @@
+<!-- Trainings Management Template -->
+<ng-template #trainingsTemplate>
+  <div class="space-y-6">
+    <!-- Training Creation Form -->
+    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+      <h2 class="text-xl font-semibold text-white mb-6 flex items-center">
+        <svg class="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg> Criar Novo Treinamento
+      </h2>
+      
+      <form (ngSubmit)="createTraining()" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-gray-300 text-sm font-medium mb-2">Título do Treinamento</label>
+            <input 
+              type="text" 
+              [(ngModel)]="newTraining.title" 
+              name="title"
+              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              placeholder="Digite o título do treinamento"
+              required
+            >
+          </div>
+          
+          <div>
+            <label class="block text-gray-300 text-sm font-medium mb-2">Categoria</label>
+            <select 
+              [(ngModel)]="newTraining.category" 
+              name="category"
+              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              required
+            >
+              <option value="" disabled>Selecione uma categoria</option>
+              <option value="seguranca">Segurança</option>
+              <option value="compliance">Compliance</option>
+              <option value="tecnologia">Tecnologia</option>
+              <option value="rh">Recursos Humanos</option>
+              <option value="vendas">Vendas</option>
+              <option value="outros">Outros</option>
+            </select>
+          </div>
+        </div>
+        
+        <div>
+          <label class="block text-gray-300 text-sm font-medium mb-2">Descrição</label>
+          <textarea 
+            [(ngModel)]="newTraining.description" 
+            name="description"
+            rows="3"
+            class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+            placeholder="Descreva o objetivo e conteúdo do treinamento"
+            required
+          ></textarea>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-gray-300 text-sm font-medium mb-2">Duração Estimada (min)</label>
+            <input 
+              type="number" 
+              [(ngModel)]="newTraining.duration" 
+              name="duration"
+              min="1"
+              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              placeholder="30"
+              required
+            >
+          </div>
+          
+          <div>
+            <label class="block text-gray-300 text-sm font-medium mb-2">Nível de Dificuldade</label>
+            <select 
+              [(ngModel)]="newTraining.difficulty" 
+              name="difficulty"
+              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              required
+            >
+              <option value="" disabled>Selecione o nível</option>
+              <option value="iniciante">Iniciante</option>
+              <option value="intermediario">Intermediário</option>
+              <option value="avancado">Avançado</option>
+            </select>
+          </div>
+          
+          <div>
+            <label class="block text-gray-300 text-sm font-medium mb-2">Nota Mínima (%)</label>
+            <input 
+              type="number" 
+              [(ngModel)]="newTraining.passingScore" 
+              name="passingScore"
+              min="0" 
+              max="100"
+              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              placeholder="70"
+              required
+            >
+          </div>
+        </div>
+        
+        <div class="flex justify-end space-x-4">
+          <button 
+            type="button" 
+            (click)="resetForm()"
+            class="px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+          >
+            Limpar
+          </button>
+          <button 
+            type="submit" 
+            [disabled]="isCreatingTraining"
+            class="px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+          >
+            <svg *ngIf="isCreatingTraining" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>{{ isCreatingTraining ? 'Criando...' : 'Criar Treinamento' }}</span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Questions Management -->
+    <div *ngIf="selectedTraining" class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+      <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+        <span class="mr-2">❓</span> Gerenciar Perguntas - {{ selectedTraining.title }}
+      </h3>
+      
+      <!-- Generated Questions -->
+      <div *ngIf="generatedQuestions.length > 0" class="mb-6">
+        <h4 class="text-md font-medium text-gray-300 mb-3">Perguntas Geradas Automaticamente</h4>
+        <div class="space-y-3">
+          <div *ngFor="let question of generatedQuestions; let i = index" class="bg-white/5 rounded-lg p-4">
+            <div class="flex justify-between items-start mb-2">
+              <h5 class="text-white font-medium">{{ i + 1 }}. {{ question.question }}</h5>
+              <div class="flex space-x-2">
+                <button 
+                  (click)="editQuestion(question)"
+                  class="text-blue-400 hover:text-blue-300 transition-colors"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                  </svg>
+                </button>
+                <button 
+                  (click)="deleteQuestion(question)"
+                  class="text-red-400 hover:text-red-300 transition-colors"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <div *ngFor="let option of question.options; let j = index" 
+                   [class]="j === question.correctAnswer ? 'bg-green-500/20 border-green-500/50' : 'bg-white/5 border-white/10'" 
+                   class="p-2 rounded border">
+                <span class="text-gray-300 text-sm">{{ ['A', 'B', 'C', 'D'][j] }})</span>
+                <span [class]="j === question.correctAnswer ? 'text-green-300' : 'text-white'" class="ml-2">{{ option }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Manual Question Form -->
+      <div class="bg-white/5 rounded-lg p-4">
+        <h4 class="text-md font-medium text-gray-300 mb-3">Adicionar Pergunta Manualmente</h4>
+        <form (ngSubmit)="addManualQuestion()" class="space-y-4">
+          <div>
+            <label class="block text-gray-300 text-sm font-medium mb-2">Pergunta</label>
+            <textarea 
+              [(ngModel)]="newQuestion.question" 
+              name="question"
+              rows="2"
+              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+              placeholder="Digite a pergunta"
+              required
+            ></textarea>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div *ngFor="let option of newQuestion.options; let i = index">
+              <label class="block text-gray-300 text-sm font-medium mb-2">Opção {{ ['A', 'B', 'C', 'D'][i] }}</label>
+              <div class="flex space-x-2">
+                <input 
+                  type="text" 
+                  [(ngModel)]="newQuestion.options[i]" 
+                  [name]="'option' + i"
+                  class="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  [placeholder]="'Digite a opção ' + ['A', 'B', 'C', 'D'][i]"
+                  required
+                >
+                <button 
+                  type="button" 
+                  (click)="newQuestion.correctAnswer = i"
+                  [class]="newQuestion.correctAnswer === i ? 'bg-green-500 text-white' : 'bg-white/10 text-gray-400 hover:bg-white/20'"
+                  class="px-3 py-3 rounded-lg transition-colors flex items-center justify-center"
+                  title="Marcar como resposta correta"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="flex justify-end">
+            <button 
+              type="submit" 
+              class="px-6 py-3 bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white rounded-lg transition-all duration-300"
+            >
+              Adicionar Pergunta
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Existing Trainings List -->
+    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+      <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+        <span class="mr-2">📚</span> Treinamentos Existentes
+      </h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div *ngFor="let training of existingTrainings" class="bg-white/5 rounded-lg p-4 hover:bg-white/10 transition-colors">
+          <div class="flex justify-between items-start mb-3">
+            <h4 class="text-white font-medium">{{ training.title }}</h4>
+            <span [class]="getStatusClass(training.status)" class="px-2 py-1 text-xs rounded-full">
+              {{ getStatusText(training.status) }}
+            </span>
+          </div>
+          
+          <p class="text-gray-300 text-sm mb-3 line-clamp-2">{{ training.description }}</p>
+          
+          <div class="flex justify-between items-center text-xs text-gray-400 mb-3">
+            <span>{{ training.category }}</span>
+            <span>{{ training.duration }} min</span>
+          </div>
+          
+          <div class="flex justify-between items-center">
+            <div class="text-xs text-gray-400">
+              <span>{{ training.questionsCount || 0 }} perguntas</span>
+            </div>
+            <div class="flex space-x-2">
+              <button 
+                (click)="manageQuestions(training)"
+                class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs transition-colors"
+              >
+                Gerenciar
+              </button>
+              <button 
+                (click)="editTraining(training)"
+                class="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded text-xs transition-colors"
+              >
+                Editar
+              </button>
+              <button 
+                (click)="deleteTraining(training)"
+                class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs transition-colors"
+              >
+                Excluir
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Empty State -->
+      <div *ngIf="existingTrainings.length === 0" class="text-center py-12">
+        <svg class="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+        </svg>
+        <h4 class="text-xl font-semibold text-white mb-2">Nenhum treinamento encontrado</h4>
+        <p class="text-gray-400">Crie seu primeiro treinamento usando o formulário acima.</p>
+      </div>
+    </div>
+  </div>
+</ng-template>

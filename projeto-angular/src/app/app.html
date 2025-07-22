@@ -1,0 +1,426 @@
+<!-- CNV Training Platform - Modern & Interactive Design -->
+
+<!-- Navbar -->
+<nav class="fixed top-0 w-full z-50 glass-effect">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <!-- Logo -->
+      <div class="flex items-center space-x-2">
+        <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+          <span class="text-white font-bold text-sm">CNV</span>
+        </div>
+        <span class="text-xl font-bold text-white">CNV Training</span>
+      </div>
+
+      <!-- Navigation Links -->
+      <div class="hidden md:flex items-center space-x-8">
+        <a href="#home" class="text-white hover:text-blue-300 transition-colors">Início</a>
+        <a href="#about" class="text-white hover:text-blue-300 transition-colors">Sobre CNV</a>
+        <a href="#training" class="text-white hover:text-blue-300 transition-colors">Treinamentos</a>
+        <a href="#plans" class="text-white hover:text-blue-300 transition-colors">Planos</a>
+      </div>
+
+      <!-- Auth Buttons -->
+      <div class="flex items-center space-x-4">
+        <button (click)="goToLogin()" class="text-white hover:text-blue-300 transition-colors">Login</button>
+        <button (click)="goToRegister()" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all hover-scale">
+          Cadastro
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section id="home" class="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 flex items-center justify-center relative overflow-hidden">
+  <!-- Interactive Particles Background -->
+  <div id="particles-container" class="absolute inset-0">
+    <!-- Floating particles will be generated here -->
+  </div>
+  
+  <!-- Background gradient overlay -->
+  <div class="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-purple-900/30 to-cyan-900/20"></div>
+  
+  <!-- Animated background elements -->
+  <div class="absolute inset-0 opacity-30">
+    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
+    <div class="absolute top-3/4 right-1/4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse" style="animation-delay: 2s;"></div>
+    <div class="absolute bottom-1/4 left-1/2 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse" style="animation-delay: 4s;"></div>
+  </div>
+
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+    <!-- Main Title -->
+    <h1 class="text-6xl md:text-8xl font-bold mb-6 mt-20 animate-fade-in">
+      <span class="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+        Transforme sua
+      </span>
+      <br>
+      <span class="bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
+        Comunicação
+      </span>
+    </h1>
+    
+    <!-- Subtitle -->
+    <p class="text-lg md:text-xl text-gray-300 mb-8 max-w-4xl mx-auto leading-relaxed animate-slide-up">
+      Domine a <span class="text-green-400 font-semibold">Comunicação Não Violenta</span> através de cenários interativos<br>
+      personalizados por IA. Desenvolva habilidades que transformam conflitos em<br>
+      conexões.
+    </p>
+    
+    <!-- Feature Cards -->
+    <div class="grid md:grid-cols-3 gap-6 mb-16 animate-fade-in max-w-4xl mx-auto">
+      <!-- Card 1: Cenários Personalizados -->
+      <div class="group bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/20">
+        <div class="flex flex-col items-center text-center">
+          <div class="w-16 h-16 bg-gradient-to-r from-blue-400 to-blue-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+            </svg>
+          </div>
+          <h3 class="text-white font-semibold text-lg mb-2">Cenários Personalizados</h3>
+          <p class="text-white/80 text-sm leading-relaxed">IA que adapta cenários baseado no seu perfil profissional</p>
+        </div>
+      </div>
+
+      <!-- Card 2: Feedback Inteligente -->
+      <div class="group bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/20">
+        <div class="flex flex-col items-center text-center">
+          <div class="w-16 h-16 bg-gradient-to-r from-purple-400 to-purple-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-white font-semibold text-lg mb-2">Feedback Inteligente</h3>
+          <p class="text-white/80 text-sm leading-relaxed">Análise detalhada das suas escolhas comunicativas</p>
+        </div>
+      </div>
+
+      <!-- Card 3: Gamificação -->
+      <div class="group bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-green-500/20">
+        <div class="flex flex-col items-center text-center">
+          <div class="w-16 h-16 bg-gradient-to-r from-green-400 to-green-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                   <img src="gamepad-2.svg" alt="Gamepad" class="w-8 h-8 text-white filter brightness-0 invert">
+                 </div>
+          <h3 class="text-white font-semibold text-lg mb-2">Gamificação</h3>
+          <p class="text-white/80 text-sm leading-relaxed">Sistema de pontuação que torna o aprendizado envolvente</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- CTA Button -->
+    <div class="animate-slide-up">
+      <button class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-12 py-4 rounded-full font-semibold text-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-2xl hover:shadow-blue-500/25">
+        Iniciar Jornada CNV
+        <svg class="inline-block ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+        </svg>
+      </button>
+    </div>
+    
+
+    
+
+  </div>
+</section>
+
+<!-- About CNV Section -->
+<section id="about" class="py-20 bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl font-bold text-white mb-4">O que é CNV?</h2>
+      <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+        A Comunicação Não Violenta é uma abordagem revolucionária que transforma conflitos em oportunidades de conexão
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8 items-stretch">
+      <!-- Card 1 -->
+      <div class="bg-white/10 rounded-xl shadow-lg p-8 hover-scale transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/20 border border-white/20">
+        <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mb-6">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+          </svg>
+        </div>
+        <h3 class="text-2xl font-bold text-white mb-4">Empatia Genuína</h3>
+        <p class="text-gray-300">
+          Desenvolva a capacidade de compreender e se conectar com as necessidades e sentimentos dos outros de forma autêntica.
+        </p>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="bg-white/10 rounded-xl shadow-lg p-8 hover-scale transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/20 border border-white/20">
+        <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-blue-600 rounded-lg flex items-center justify-center mb-6">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+          </svg>
+        </div>
+        <h3 class="text-2xl font-bold text-white mb-4">Resolução de Conflitos</h3>
+        <p class="text-gray-300">
+          Transforme tensões e desentendimentos em oportunidades de crescimento e fortalecimento de relacionamentos.
+        </p>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="bg-white/10 rounded-xl shadow-lg p-8 hover-scale transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/20 border border-white/20">
+        <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg flex items-center justify-center mb-6">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+          </svg>
+        </div>
+        <h3 class="text-2xl font-bold text-white mb-4">Impacto Corporativo</h3>
+        <p class="text-gray-300">
+          Melhore a produtividade, reduza o turnover e crie um ambiente de trabalho mais colaborativo e saudável.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Training Scenarios Section -->
+<section id="training" class="py-20 bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl font-bold text-white mb-4">Cenários de Treinamento</h2>
+      <p class="text-xl text-gray-300 mb-12 max-w-3xl mx-auto">
+        Escolha seu método preferido de aprendizado com nossa IA avançada
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8">
+      <!-- Scenario 1: Questionários -->
+      <div class="relative bg-white/10 rounded-2xl p-8 border border-white/20 flex flex-col h-full hover-scale transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20">
+        <div class="relative z-10 flex flex-col h-full">
+          <div class="w-20 h-20 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mb-6 mx-auto">
+            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold text-white mb-4 text-center">Questionários Interativos</h3>
+          <p class="text-gray-300 text-center mb-6 flex-grow">
+            Teste seus conhecimentos com questionários adaptativos que se ajustam ao seu nível de aprendizado.
+          </p>
+          <div class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 rounded-lg font-semibold text-center mt-auto">
+            Modalidade: Questionários
+          </div>
+        </div>
+      </div>
+
+      <!-- Scenario 2: RPG -->
+      <div class="relative bg-white/10 rounded-2xl p-8 border border-white/20 flex flex-col h-full hover-scale transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20">
+        <div class="relative z-10 flex flex-col h-full">
+          <div class="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mb-6 mx-auto">
+            <img src="gamepad-2.svg" alt="Gamepad" class="w-10 h-10 text-white filter brightness-0 invert">
+          </div>
+          <h3 class="text-2xl font-bold text-white mb-4 text-center">RPG Imersivo</h3>
+          <p class="text-gray-300 text-center mb-6 flex-grow">
+            Viva situações reais em um ambiente gamificado onde suas escolhas moldam a narrativa.
+          </p>
+          <div class="w-full bg-gradient-to-r from-purple-500 to-pink-600 text-white py-3 rounded-lg font-semibold text-center mt-auto">
+            Modalidade: RPG
+          </div>
+        </div>
+      </div>
+
+      <!-- Scenario 3: Simulações -->
+      <div class="relative bg-white/10 rounded-2xl p-8 border border-white/20 flex flex-col h-full hover-scale transition-all duration-300 hover:shadow-2xl hover:shadow-green-500/20">
+        <div class="relative z-10 flex flex-col h-full">
+          <div class="w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mb-6 mx-auto">
+            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold text-white mb-4 text-center">Simulações Corporativas</h3>
+          <p class="text-gray-300 text-center mb-6 flex-grow">
+            Pratique em cenários corporativos realistas com feedback instantâneo da IA.
+          </p>
+          <div class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-lg font-semibold text-center mt-auto">
+            Modalidade: Simulação
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing Plans Section -->
+<section id="plans" class="py-20 bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl font-bold text-white mb-4">Planos de Treinamento</h2>
+      <p class="text-xl text-gray-300 mb-12 max-w-3xl mx-auto">
+        Planos flexíveis para diferentes necessidades corporativas
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8">
+      <!-- Business Plan -->
+      <div class="bg-white/10 rounded-2xl p-8 hover-scale transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 border border-white/20">
+        <div class="text-center mb-8">
+          <h3 class="text-2xl font-bold text-white mb-2">Business</h3>
+          <div class="text-4xl font-bold text-white mb-2">
+            R$ <span class="text-blue-400">250</span>
+          </div>
+          <p class="text-gray-300">por mês</p>
+        </div>
+        <ul class="space-y-4 mb-8">
+          <li class="flex items-center text-gray-300">
+            <svg class="w-5 h-5 text-green-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Até 50 usuários
+          </li>
+          <li class="flex items-center text-gray-300">
+            <svg class="w-5 h-5 text-green-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Todos os cenários de treinamento
+          </li>
+          <li class="flex items-center text-gray-300">
+            <svg class="w-5 h-5 text-green-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Relatórios básicos
+          </li>
+          <li class="flex items-center text-gray-300">
+            <svg class="w-5 h-5 text-green-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Suporte por email
+          </li>
+        </ul>
+        <button class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+          Começar Agora
+        </button>
+      </div>
+
+      <!-- Business Pro Plan -->
+      <div class="bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl p-8 hover-scale transition-all duration-300 hover:shadow-2xl relative">
+        <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+          <span class="bg-yellow-400 text-gray-900 px-4 py-1 rounded-full text-sm font-semibold">Mais Popular</span>
+        </div>
+        <div class="text-center mb-8">
+          <h3 class="text-2xl font-bold text-white mb-2">Business Pro</h3>
+          <div class="text-4xl font-bold text-white mb-2">
+            R$ <span class="text-yellow-400">500</span>
+          </div>
+          <p class="text-purple-200">por mês</p>
+        </div>
+        <ul class="space-y-4 mb-8">
+          <li class="flex items-center">
+            <svg class="w-5 h-5 text-yellow-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span class="text-white">Até 200 usuários</span>
+          </li>
+          <li class="flex items-center">
+            <svg class="w-5 h-5 text-yellow-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span class="text-white">IA personalizada</span>
+          </li>
+          <li class="flex items-center">
+            <svg class="w-5 h-5 text-yellow-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span class="text-white">Relatórios avançados</span>
+          </li>
+          <li class="flex items-center">
+            <svg class="w-5 h-5 text-yellow-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span class="text-white">Suporte prioritário</span>
+          </li>
+        </ul>
+        <button class="w-full bg-yellow-400 text-gray-900 py-3 rounded-lg font-semibold hover:bg-yellow-300 transition-colors">
+          Começar Agora
+        </button>
+      </div>
+
+      <!-- Corporation Master Plan -->
+      <div class="bg-white/10 rounded-2xl p-8 hover-scale transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20 border border-white/20">
+        <div class="text-center mb-8">
+          <h3 class="text-2xl font-bold text-white mb-2">Corporation Master</h3>
+          <div class="text-4xl font-bold text-white mb-2">
+            R$ <span class="text-purple-400">1000</span>
+          </div>
+          <p class="text-gray-300">por mês</p>
+        </div>
+        <ul class="space-y-4 mb-8">
+          <li class="flex items-center text-gray-300">
+            <svg class="w-5 h-5 text-green-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Usuários ilimitados
+          </li>
+          <li class="flex items-center text-gray-300">
+            <svg class="w-5 h-5 text-green-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            IA dedicada e customizada
+          </li>
+          <li class="flex items-center text-gray-300">
+            <svg class="w-5 h-5 text-green-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Analytics empresariais
+          </li>
+          <li class="flex items-center text-gray-300">
+            <svg class="w-5 h-5 text-green-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Suporte 24/7 dedicado
+          </li>
+        </ul>
+        <button class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
+          Começar Agora
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 text-white py-12">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid md:grid-cols-4 gap-8">
+      <div>
+        <div class="flex items-center space-x-2 mb-4">
+          <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+            <span class="text-white font-bold text-sm">CNV</span>
+          </div>
+          <span class="text-xl font-bold">CNV Training</span>
+        </div>
+        <p class="text-gray-400">
+          Transformando a comunicação corporativa através da Comunicação Não Violenta com tecnologia de IA.
+        </p>
+      </div>
+      <div>
+        <h4 class="font-semibold mb-4">Produto</h4>
+        <ul class="space-y-2 text-gray-400">
+          <li><a href="#" class="hover:text-white transition-colors">Treinamentos</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Planos</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Recursos</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold mb-4">Empresa</h4>
+        <ul class="space-y-2 text-gray-400">
+          <li><a href="#" class="hover:text-white transition-colors">Sobre</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Blog</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Contato</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold mb-4">Suporte</h4>
+        <ul class="space-y-2 text-gray-400">
+          <li><a href="#" class="hover:text-white transition-colors">Central de Ajuda</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Documentação</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Status</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+      <p>&copy; 2024 CNV Training. Todos os direitos reservados.</p>
+    </div>
+  </div>
+</footer>

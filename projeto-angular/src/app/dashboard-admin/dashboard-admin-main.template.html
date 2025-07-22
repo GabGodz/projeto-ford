@@ -1,0 +1,582 @@
+<div class="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+  <!-- Header -->
+  <header class="bg-white/10 backdrop-blur-sm border-b border-white/20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-4">
+        <div class="flex items-center space-x-4">
+          <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-600 rounded-lg flex items-center justify-center">
+            <span class="text-white font-bold text-lg">A</span>
+          </div>
+          <div>
+            <h1 class="text-xl font-bold text-white">Admin Dashboard</h1>
+            <p class="text-gray-300 text-sm">Painel de Administração</p>
+          </div>
+        </div>
+        
+        <div class="flex items-center space-x-4">
+          <div class="text-right">
+            <p class="text-white font-medium">{{ currentUser?.fullName || 'Administrador' }}</p>
+            <p class="text-gray-300 text-sm">{{ currentUser?.email || 'admin@sistema.com' }}</p>
+          </div>
+          <button (click)="logout()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center space-x-2">
+            <span>🚪</span>
+            <span>Sair</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Navigation Tabs -->
+    <div class="mb-8">
+      <nav class="flex space-x-1 bg-white/10 backdrop-blur-sm rounded-xl p-1 border border-white/20">
+        <button 
+          *ngFor="let tab of tabs" 
+          (click)="activeTab = tab.id"
+          [class]="activeTab === tab.id ? 'bg-white/20 text-white' : 'text-gray-300 hover:text-white hover:bg-white/10'"
+          class="flex-1 flex items-center justify-center space-x-2 px-4 py-3 rounded-lg transition-all duration-300 font-medium"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="getTabIconPath(tab.icon)"></path>
+          </svg>
+          <span>{{ tab.label }}</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Tab Content -->
+    <div [ngSwitch]="activeTab">
+      <!-- Users Management Tab -->
+      <div *ngSwitchCase="'users'" class="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-6">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold text-white">Gerenciamento de Usuários</h2>
+          <div class="text-sm text-gray-300">
+            Total: {{ users.length }} usuários
+          </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b border-white/20">
+                <th class="text-left py-3 px-4 text-gray-300 font-medium">Nome</th>
+                <th class="text-left py-3 px-4 text-gray-300 font-medium">Email</th>
+                <th class="text-left py-3 px-4 text-gray-300 font-medium">Tipo</th>
+                <th class="text-left py-3 px-4 text-gray-300 font-medium">Status</th>
+                <th class="text-left py-3 px-4 text-gray-300 font-medium">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of users" class="border-b border-white/10 hover:bg-white/5">
+                <td class="py-3 px-4 text-white">{{ user.fullName || user.username }}</td>
+                <td class="py-3 px-4 text-gray-300">{{ user.email }}</td>
+                <td class="py-3 px-4">
+                  <span [class]="user.role === 'admin' ? 'bg-purple-500/20 text-purple-300' : 'bg-blue-500/20 text-blue-300'" 
+                        class="px-2 py-1 rounded-full text-xs font-medium">
+                    {{ user.role === 'admin' ? 'Admin' : 'Usuário' }}
+                  </span>
+                </td>
+                <td class="py-3 px-4">
+                  <span [class]="user.active ? 'bg-green-500/20 text-green-300' : 'bg-red-500/20 text-red-300'" 
+                        class="px-2 py-1 rounded-full text-xs font-medium">
+                    {{ user.active ? 'Ativo' : 'Inativo' }}
+                  </span>
+                </td>
+                <td class="py-3 px-4">
+                  <div class="flex flex-col space-y-2">
+                    <div class="flex space-x-2">
+                      <button (click)="toggleTrainingAccess(user)" 
+                              [class]="user.trainingAccess ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-500 hover:bg-gray-600'"
+                              class="text-white px-3 py-1 rounded text-xs transition-colors">
+                        {{ user.trainingAccess ? 'Acesso Ativo' : 'Dar Acesso' }}
+                      </button>
+                      <button *ngIf="user.role !== 'admin'" (click)="promoteToAdmin(user)" 
+                              class="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded text-xs transition-colors">
+                        Promover
+                      </button>
+                      <button (click)="deleteUser(user)" 
+                              class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs transition-colors">
+                        Excluir
+                      </button>
+                    </div>
+                    
+                    <!-- Training Assignment -->
+                    <div *ngIf="user.trainingAccess && user.role !== 'admin'" class="mt-2">
+                      <div class="text-xs text-gray-400 mb-1">Treinamentos Atribuídos:</div>
+                      <div class="flex flex-wrap gap-1">
+                        <button *ngFor="let training of trainings" 
+                                (click)="assignTrainingToUser(user, training.id)"
+                                [class]="isTrainingAssigned(user, training.id) ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-600 hover:bg-gray-500'"
+                                class="text-white px-2 py-1 rounded text-xs transition-colors"
+                                [title]="training.title">
+                          {{ isTrainingAssigned(user, training.id) ? '✓' : '+' }} {{ training.title.substring(0, 15) }}{{ training.title.length > 15 ? '...' : '' }}
+                        </button>
+                      </div>
+                      <div *ngIf="(user.assignedTrainings?.length || 0) > 0" class="text-xs text-green-400 mt-1">
+                        {{ user.assignedTrainings?.length }} treinamento(s) atribuído(s)
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div *ngIf="users.length === 0" class="text-center py-8">
+          <p class="text-gray-400">Nenhum usuário encontrado.</p>
+        </div>
+      </div>
+
+      <!-- Reports Tab -->
+      <div *ngSwitchCase="'reports'" class="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-6">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold text-white">Relatórios e Analytics</h2>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div class="bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl p-6 border border-white/10">
+            <h3 class="text-lg font-semibold text-white mb-2">Total de Usuários</h3>
+            <p class="text-3xl font-bold text-blue-300">{{ users.length }}</p>
+          </div>
+          <div class="bg-gradient-to-r from-green-500/20 to-blue-500/20 rounded-xl p-6 border border-white/10">
+            <h3 class="text-lg font-semibold text-white mb-2">Treinamentos Ativos</h3>
+            <p class="text-3xl font-bold text-green-300">{{ trainings.length }}</p>
+          </div>
+          <div class="bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-xl p-6 border border-white/10">
+            <h3 class="text-lg font-semibold text-white mb-2">Relatórios Gerados</h3>
+            <p class="text-3xl font-bold text-purple-300">{{ assessmentReports.length }}</p>
+          </div>
+        </div>
+
+        <!-- Assessment Reports -->
+        <div class="bg-white/5 rounded-xl p-6 border border-white/10">
+          <h3 class="text-lg font-semibold text-white mb-4">Relatórios de Avaliação</h3>
+          
+          <div *ngIf="personalityReports.length > 0" class="space-y-4">
+            <div *ngFor="let report of personalityReports" class="bg-white/5 rounded-lg p-4 border border-white/10">
+              <div class="flex justify-between items-start mb-3">
+                <div>
+                  <h4 class="text-white font-medium">{{ report.userName || 'Usuário' }}</h4>
+                  <p class="text-gray-400 text-sm">{{ report.userEmail || 'Email não disponível' }}</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-gray-300 text-sm">{{ report.completedAt?.toDate ? (report.completedAt.toDate() | date:'dd/MM/yyyy HH:mm') : (report.completedAt | date:'dd/MM/yyyy HH:mm') }}</p>
+                  <span class="bg-green-500/20 text-green-300 px-2 py-1 rounded-full text-xs">Concluído</span>
+                </div>
+              </div>
+              
+              <div *ngIf="report.personalityProfile" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span class="text-gray-400">Estilo de Comunicação:</span>
+                  <p class="text-white">{{ report.personalityProfile.communicationStyle || 'Não definido' }}</p>
+                </div>
+                <div>
+                  <span class="text-gray-400">Foco CNV:</span>
+                  <p class="text-white">{{ report.personalityProfile.cnvFocus || 'Não definido' }}</p>
+                </div>
+              </div>
+              
+              <div *ngIf="report.personalityProfile?.recommendations" class="mt-3">
+                <span class="text-gray-400 text-sm">Recomendações:</span>
+                <div class="mt-1">
+                  <span *ngFor="let rec of report.personalityProfile.recommendations; let last = last" 
+                        class="text-blue-300 text-sm">
+                    {{ rec }}<span *ngIf="!last">, </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div *ngIf="personalityReports.length === 0" class="text-center py-8">
+            <svg class="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+            </svg>
+            <p class="text-gray-400">Nenhum relatório de avaliação encontrado.</p>
+            <p class="text-gray-500 text-sm mt-2">Os relatórios aparecerão aqui quando os usuários completarem suas avaliações iniciais.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trainings Tab -->
+      <div *ngSwitchCase="'trainings'" class="space-y-6">
+        <!-- Create Training Form -->
+        <div class="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-6">
+          <h2 class="text-2xl font-bold text-white mb-6">Criar Novo Treinamento</h2>
+          
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Training Info -->
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Título do Treinamento</label>
+                <input [(ngModel)]="newTraining.title" 
+                       type="text" 
+                       placeholder="Ex: Comunicação Não Violenta Básica"
+                       class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500">
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Categoria</label>
+                <div class="relative">
+                  <button (click)="toggleCategoryDropdown()" 
+                          class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <div class="flex items-center space-x-3">
+                      <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="getCategoryIconPath(newTraining.category)"></path>
+                      </svg>
+                      <span>{{ getCategoryName(newTraining.category) }}</span>
+                    </div>
+                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                  </button>
+                  
+                  <div *ngIf="showCategoryDropdown" class="absolute z-10 w-full mt-1 bg-gray-800 border border-white/20 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                    <button *ngFor="let category of categories" 
+                            (click)="selectCategory(category.value)"
+                            class="w-full px-4 py-3 text-left hover:bg-white/10 flex items-center space-x-3 text-white">
+                      <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="getCategoryIconPath(category.value)"></path>
+                      </svg>
+                      <span>{{ category.name }}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Descrição</label>
+                <textarea [(ngModel)]="newTraining.description" 
+                          rows="4" 
+                          placeholder="Descreva o conteúdo e objetivos do treinamento..."
+                          class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"></textarea>
+              </div>
+            </div>
+            
+            <!-- AI Generation -->
+            <div class="space-y-4">
+              <div class="bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-xl p-6 border border-purple-500/20">
+                <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                  <svg class="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  Geração com IA
+                </h3>
+                <p class="text-gray-300 text-sm mb-4">Use nossa IA para gerar perguntas automaticamente baseadas no tema escolhido.</p>
+                
+                <!-- Category Selection -->
+                <div class="mb-4">
+                  <label class="block text-sm font-medium text-gray-300 mb-2">Categoria das Perguntas</label>
+                  <div class="relative">
+                    <button type="button" 
+                            (click)="showQuestionCategoryDropdown = !showQuestionCategoryDropdown"
+                            class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500 flex items-center justify-between hover:bg-white/15 transition-colors">
+                      <div class="flex items-center space-x-3">
+                        <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path *ngIf="!selectedQuestionCategory" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                          <path *ngIf="selectedQuestionCategory === 'workplace'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                          <path *ngIf="selectedQuestionCategory === 'family'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                          <path *ngIf="selectedQuestionCategory === 'relationships'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                          <path *ngIf="selectedQuestionCategory === 'self_awareness'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          <path *ngIf="selectedQuestionCategory === 'social'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a4 4 0 11-8 0 4 4 0 018 0z" />
+                          <path *ngIf="selectedQuestionCategory === 'conflict'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                        <span>{{ getQuestionCategoryDisplayName(selectedQuestionCategory) }}</span>
+                      </div>
+                      <svg class="w-5 h-5 text-gray-400 transition-transform" 
+                           [class.rotate-180]="showQuestionCategoryDropdown" 
+                           fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    
+                    <div *ngIf="showQuestionCategoryDropdown" 
+                         class="absolute top-full left-0 right-0 mt-1 bg-gray-800/95 backdrop-blur-sm border border-white/20 rounded-lg shadow-xl z-50 max-h-64 overflow-y-auto">
+                      <div class="p-1">
+                        <button type="button" 
+                                (click)="selectQuestionCategory('')"
+                                class="w-full px-4 py-3 text-left hover:bg-white/10 rounded-lg transition-colors flex items-center space-x-3 text-white">
+                          <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                          </svg>
+                          <span>Geral (Todas as categorias)</span>
+                        </button>
+                        
+                        <button type="button" 
+                                (click)="selectQuestionCategory('workplace')"
+                                class="w-full px-4 py-3 text-left hover:bg-white/10 rounded-lg transition-colors flex items-center space-x-3 text-white">
+                          <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                          </svg>
+                          <span>Ambiente de Trabalho</span>
+                        </button>
+                        
+                        <button type="button" 
+                                (click)="selectQuestionCategory('family')"
+                                class="w-full px-4 py-3 text-left hover:bg-white/10 rounded-lg transition-colors flex items-center space-x-3 text-white">
+                          <svg class="w-5 h-5 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                          </svg>
+                          <span>Relações Interpessoais</span>
+                        </button>
+                        
+                        <button type="button" 
+                                (click)="selectQuestionCategory('relationships')"
+                                class="w-full px-4 py-3 text-left hover:bg-white/10 rounded-lg transition-colors flex items-center space-x-3 text-white">
+                          <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                          </svg>
+                          <span>Relacionamentos Profissionais</span>
+                        </button>
+                        
+                        <button type="button" 
+                                (click)="selectQuestionCategory('self_awareness')"
+                                class="w-full px-4 py-3 text-left hover:bg-white/10 rounded-lg transition-colors flex items-center space-x-3 text-white">
+                          <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                          <span>Autoconhecimento</span>
+                        </button>
+                        
+                        <button type="button" 
+                                (click)="selectQuestionCategory('social')"
+                                class="w-full px-4 py-3 text-left hover:bg-white/10 rounded-lg transition-colors flex items-center space-x-3 text-white">
+                          <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a4 4 0 11-8 0 4 4 0 018 0z" />
+                          </svg>
+                          <span>Habilidades Sociais</span>
+                        </button>
+                        
+                        <button type="button" 
+                                (click)="selectQuestionCategory('conflict')"
+                                class="w-full px-4 py-3 text-left hover:bg-white/10 rounded-lg transition-colors flex items-center space-x-3 text-white">
+                          <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                          </svg>
+                          <span>Resolução de Conflitos</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <button (click)="generateInitialQuestions()" 
+                        [disabled]="isGenerating"
+                        class="w-full bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 disabled:opacity-50 text-white font-medium py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2">
+                  <svg *ngIf="!isGenerating" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3l1.5 1.5L8 3l-1.5 1.5L5 3zm7 7l1.5 1.5L15 10l-1.5 1.5L12 10zm-7 7l1.5 1.5L8 20l-1.5 1.5L5 20z" />
+                    </svg>
+                  <svg *ngIf="isGenerating" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                  <span>{{ isGenerating ? 'Gerando...' : 'Gerar Perguntas' }}</span>
+                </button>
+              </div>
+              
+              <div *ngIf="generatedQuestions.length > 0" class="bg-green-500/10 rounded-xl p-4 border border-green-500/20">
+                <p class="text-green-300 text-sm flex items-center">
+                  <svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  {{ generatedQuestions.length }} perguntas geradas!
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Action Buttons -->
+          <div class="flex space-x-4 mt-6">
+            <button (click)="createTraining()" 
+                    class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-300 flex items-center space-x-2">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3-3m0 0l-3 3m3-3v12" />
+              </svg>
+              <span>{{ editingTrainingId ? 'Atualizar' : 'Criar' }} Treinamento</span>
+            </button>
+            
+            <button *ngIf="generatedQuestions.length > 0" (click)="previewQuiz()" 
+                    class="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-300 flex items-center space-x-2">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              <span>Visualizar Quiz</span>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Generated Questions Section -->
+        <div *ngIf="generatedQuestions.length > 0" class="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-6">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold text-white">Perguntas Geradas ({{ generatedQuestions.length }})</h3>
+            <div class="flex space-x-2">
+              <button (click)="generateMoreQuestions()" 
+                      class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center space-x-2">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                <span>Gerar Mais</span>
+              </button>
+            </div>
+          </div>
+          
+          <div class="space-y-4 max-h-96 overflow-y-auto">
+            <div *ngFor="let question of generatedQuestions; let i = index" 
+                 class="bg-white/5 rounded-lg p-4 border border-white/10">
+              <div class="flex justify-between items-start mb-3">
+                <h4 class="text-white font-medium">Pergunta {{ i + 1 }}</h4>
+                <div class="flex space-x-2">
+                  <button (click)="editQuestion(question.id)" 
+                          class="text-blue-400 hover:text-blue-300 text-sm">
+                    <svg class="inline h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    Editar
+                  </button>
+                  <button (click)="deleteQuestion(question.id)" 
+                          class="text-red-400 hover:text-red-300 text-sm">
+                    <svg class="inline h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Excluir
+                  </button>
+                </div>
+              </div>
+              
+              <div *ngIf="editingQuestionId !== question.id">
+                <p class="text-gray-300 mb-3">{{ question.question }}</p>
+                <div class="space-y-2">
+                  <div *ngFor="let option of question.options; let j = index" 
+                       [class]="j === question.correctAnswer ? 'text-green-300' : 'text-gray-400'"
+                       class="text-sm flex items-center space-x-2">
+                    <span>{{ String.fromCharCode(65 + j) }})</span>
+                    <span>{{ option }}</span>
+                    <span *ngIf="j === question.correctAnswer" class="text-green-400">✓</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div *ngIf="editingQuestionId === question.id" class="space-y-3">
+                <input [(ngModel)]="question.question" 
+                       class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                
+                <div class="space-y-2">
+                  <div *ngFor="let option of question.options; let j = index" class="flex items-center space-x-2">
+                    <input [(ngModel)]="question.options[j]" 
+                           class="flex-1 px-3 py-2 bg-white/10 border border-white/20 rounded text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <input type="radio" 
+                           [name]="'correct-' + question.id" 
+                           [value]="j" 
+                           [(ngModel)]="question.correctAnswer"
+                           class="text-green-500">
+                  </div>
+                </div>
+                
+                <div class="flex space-x-2">
+                  <button (click)="saveQuestion(question)" 
+                          class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">
+                    Salvar
+                  </button>
+                  <button (click)="cancelEditQuestion()" 
+                          class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded text-sm">
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Add Manual Question -->
+          <div class="mt-6 pt-6 border-t border-white/20">
+            <h4 class="text-lg font-semibold text-white mb-4">Adicionar Pergunta Manual</h4>
+            <div class="space-y-4">
+              <input [(ngModel)]="newManualQuestion.question" 
+                     placeholder="Digite sua pergunta..."
+                     class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500">
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div *ngFor="let option of newManualQuestion.options; let i = index" class="flex items-center space-x-2">
+                  <input [(ngModel)]="newManualQuestion.options[i]" 
+                         [placeholder]="'Opção ' + String.fromCharCode(65 + i)"
+                         class="flex-1 px-3 py-2 bg-white/10 border border-white/20 rounded text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                  <input type="radio" 
+                         name="newCorrectAnswer" 
+                         [value]="i" 
+                         [(ngModel)]="newManualQuestion.correctAnswer"
+                         class="text-green-500">
+                </div>
+              </div>
+              
+              <button (click)="addManualQuestion()" 
+                      class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                Adicionar Pergunta
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Existing Trainings -->
+        <div class="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-6">
+          <h3 class="text-xl font-bold text-white mb-6">Treinamentos Existentes</h3>
+          
+          <div *ngIf="trainings.length === 0" class="text-center py-8">
+            <p class="text-gray-400">Nenhum treinamento criado ainda.</p>
+          </div>
+          
+          <div *ngIf="trainings.length > 0" class="space-y-4">
+            <div *ngFor="let training of trainings" 
+                 class="bg-white/5 rounded-lg p-4 border border-white/10 hover:bg-white/10 transition-colors">
+              <div class="flex justify-between items-start">
+                <div class="flex-1">
+                  <h4 class="text-white font-semibold mb-2">{{ training.title }}</h4>
+                  <p class="text-gray-300 text-sm mb-2">{{ getCategoryName(training.category) }}</p>
+                  <p class="text-gray-400 text-sm line-clamp-2">{{ training.description }}</p>
+                  <div class="flex items-center space-x-4 mt-3 text-xs text-gray-400">
+                    <span>{{ training.questions?.length || 0 }} perguntas</span>
+                    <span>Criado em {{ training.createdAt | date:'dd/MM/yyyy' }}</span>
+                  </div>
+                </div>
+                
+                <div class="flex space-x-2 ml-4">
+                  <button (click)="editTraining(training)" 
+                          class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm transition-colors">
+                    Editar
+                  </button>
+                  <button (click)="deleteTraining(training.id)" 
+                          class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm transition-colors">
+                    Excluir
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Quiz Preview Modal -->
+<div *ngIf="showQuizPreview" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+  <div class="bg-gradient-to-br from-gray-900 to-black rounded-2xl border border-white/20 w-full max-w-4xl max-h-[90vh] overflow-hidden">
+    <div class="flex justify-between items-center p-6 border-b border-white/20">
+      <h2 class="text-2xl font-bold text-white">Preview do Quiz</h2>
+      <button (click)="closeQuizPreview()" class="text-gray-400 hover:text-white transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+    <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+      <app-interactive-quiz 
+        [questions]="generatedQuestions" 
+        (quizFinished)="onQuizFinished($event)">
+      </app-interactive-quiz>
+    </div>
+  </div>
+</div>
