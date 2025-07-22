@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { ConfigService } from './config.service';
 
 export interface TrainingScenario {
   id: string;
@@ -37,7 +37,10 @@ export interface TrainingProgress {
 export class GeminiService {
   private readonly apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private configService: ConfigService
+  ) {}
 
   async generateTrainingScenario(topic: string, difficulty: string): Promise<TrainingScenario> {
     const prompt = `
@@ -132,7 +135,8 @@ export class GeminiService {
       }]
     };
 
-    const url = `${this.apiUrl}?key=${environment.geminiApiKey}`;
+    const geminiApiKey = await this.configService.getGeminiApiKey();
+    const url = `${this.apiUrl}?key=${geminiApiKey}`;
 
     try {
       const response = await this.http.post<any>(url, body, { headers }).toPromise();

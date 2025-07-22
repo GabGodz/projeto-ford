@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService, UserProfile } from '../services/auth.service';
 import { Observable } from 'rxjs';
 
@@ -700,7 +701,7 @@ export class AdminDashboardComponent implements OnInit {
   isSaving = false;
   isDeleting = false;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadUsers();
@@ -870,7 +871,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   systemSettings(): void {
-    alert('Configurações do sistema serão implementadas em breve!');
+    this.router.navigate(['/config-admin']);
   }
 
   // Gerenciamento de Usuários

@@ -166,7 +166,12 @@ export class AuthService {
   async updateUserProfile(uid: string, data: Partial<UserProfile>): Promise<void> {
     return runInInjectionContext(this.injector, async () => {
       try {
-        await updateDoc(doc(this.firestore, 'users', uid), data);
+        // Filtrar campos undefined para evitar erro no Firestore
+        const filteredData = Object.fromEntries(
+          Object.entries(data).filter(([_, value]) => value !== undefined)
+        );
+        
+        await updateDoc(doc(this.firestore, 'users', uid), filteredData);
         
         // Atualizar o perfil local se for o usuário atual
         const currentUser = this.getCurrentUser();

@@ -5,6 +5,7 @@ import { LoginComponent } from './components/login.component';
 import { RegisterComponent } from './components/register.component';
 import { UserDashboardComponent } from './components/user-dashboard.component';
 import { AdminDashboardComponent } from './components/admin-dashboard.component';
+import { ConfigAdminComponent } from './components/config-admin.component';
 
 export const routes: Routes = [
   {
@@ -28,6 +29,12 @@ export const routes: Routes = [
   {
     path: 'admin-dashboard',
     component: AdminDashboardComponent,
+    canActivate: [AuthGuard],
+    data: { expectedRole: 'admin' }
+  },
+  {
+    path: 'config-admin',
+    component: ConfigAdminComponent,
     canActivate: [AuthGuard],
     data: { expectedRole: 'admin' }
   },

@@ -37,6 +37,10 @@ yarn-error.log
 testem.log
 /typings
 
+# Configuration files with sensitive data
+setup-config.js
+/src/environments/
+
 # System files
 .DS_Store
 Thumbs.db

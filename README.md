@@ -2,6 +2,30 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.1.
 
+## ⚠️ Configuração Inicial Obrigatória
+
+**ANTES DE EXECUTAR O PROJETO**, você deve configurar as chaves de API no Firestore:
+
+### Opção 1: Script Automático (Recomendado)
+1. **Edite o arquivo `setup-config.js`** com suas chaves reais
+2. **Execute o script:**
+   ```bash
+   npm install firebase
+   node setup-config.js
+   ```
+3. **Delete o arquivo `setup-config.js`** após a configuração
+
+### Opção 2: Interface Administrativa
+1. **Configure temporariamente** uma chave Firebase no `app.config.ts`
+2. **Acesse** `/config-admin` como administrador
+3. **Configure** todas as chaves através da interface
+
+### Chaves Necessárias:
+- **Firebase:** projectId, apiKey, authDomain, etc.
+- **Google Gemini:** geminiApiKey
+
+📖 **Todas as configurações são salvas no Firestore em `config/app-settings`**
+
 ## Development server
 
 To start a local development server, run:
